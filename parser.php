@@ -151,7 +151,7 @@ class vHomeWork_Parser{
                 /* 转换 $data4 阵列至 HTML code */
                 foreach ($data4 as $key => $value) {
                     $num = $key + 1;
-                    $answer .= "<br />第 {$num} 空f： {$value}";
+                    $answer .= "<br />第 {$num} 空： {$value}";
                 }
                 break;
         }
