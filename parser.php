@@ -154,6 +154,46 @@ class vHomeWork_Parser{
                     $answer .= "<br />第 {$num} 空： {$value}";
                 }
                 break;
+            
+            case 6:
+                $questionType = "阅读答题";
+                $questionName = '';
+            
+                /* 初始化所需变量 */
+                $data2 = array();
+                $data3 = array();
+                $data4 = array();
+            
+                /* 分割资料 */
+                $data = explode("<Questions>", $data);
+                $data = explode("</Question>", $data[1]);
+            
+                /* 获得答案 */
+                foreach($data as $key => $value){
+                    $tempdata = explode('" answer="', $value);
+                    @array_push($data2, trim($tempdata[1]));
+                }
+                foreach($data2 as $key => $value){
+                    $tempdata2 = substr($value, 0, 1);
+                    if($tempdata2 != '') array_push($data3, trim($tempdata2));
+                }
+            
+                /* 将答案编号转换成字母形式 */
+                foreach ($data3 as $key => $value) {
+                    $nvalue = str_replace('4', 'D', str_replace('3', 'C', str_replace('2', 'B', str_replace('1', 'A', $value))));
+                    array_push($data4, $nvalue);
+                }
+            
+                /* 转换 $data4 阵列至 HTML code */
+                foreach ($data4 as $key => $value) {
+                    $num = $key + 1;
+                    $answer .= "<br />第 {$num} 題： {$value}";
+                }
+                break;
+            
+            default:
+                $questionType = "尚不支持此题目类型";
+                $questionName = '';
         }
 
         /* 输出答案 */
