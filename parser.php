@@ -1,7 +1,10 @@
 <?php
 header('Content-Type: text/html; charset=utf-8');
 
+$mode = (@$_GET['copy']=='1') ? '複製模式' : '正常模式';
+
 $headCode = <<<EOF
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <style type="text/css"> 
 textarea { 
 width: 100%;
@@ -20,6 +23,14 @@ $formCode = <<<EOF
 <form method="post" action="" id="vhdata">
     <textarea placeholder="Paste vHomework data here" name="data" id="data" onchange="submit(this)" rows="10" autofocus>{vH_data}</textarea>
 </form>
+EOF;
+    
+$footer = <<<EOF
+<br /><br />
+<div style='text-align:center'>
+    在網址末尾加上 ?copy=1 將切換到複製模式。<br /><br />
+    目前為：{$mode}
+</div>
 EOF;
 
 
@@ -78,14 +89,18 @@ class vHomeWork_Parser{
             self::_Exception('XML data invalid!');
         }
         
+        /* 添加複製模式最前的 <textarea> */
+        $answer = (@$_GET['copy']=='1') ? '<textarea rows="15" onclick="this.select()" readonly>' : '';
         
         /* 判断题目类型, 解析答案 */
-        $answer = "";
         switch ($xml_Array[7]['attributes']['id']){
             case 3:
             case 7:
                 $questionType = ($xml_Array[7]['attributes']['id'] == 7) ? "单选题" : "听力选择题";
                 $questionName = "";  // 资料乱码，无法判别
+            
+                /* 添加複製模式的題目類型與題目標題 */
+                $answer .= (@$_GET['copy']=='1') ? "[{$questionType}] : {$questionName}\r\n" : '';
             
                 /* 初始化所需变量 */
                 $data2 = array();
@@ -110,7 +125,7 @@ class vHomeWork_Parser{
                 /* 转换 $data3 阵列至 HTML code */
                 foreach ($data3 as $key => $value) {
                     $num = $key + 1;
-                    $answer .= "<br />第 {$num} 題： {$value}";
+                    $answer .= (@$_GET['copy']!='1') ? "<br />第 {$num} 題： {$value}" : "第 {$num} 題： {$value}\r\n";
                 }
 
                 break;
@@ -118,6 +133,9 @@ class vHomeWork_Parser{
             case 8:
                 $questionType = "填空题";
                 $questionName = $xml_Array[14]['value'];
+            
+                /* 添加複製模式的題目類型與題目標題 */
+                $answer .= (@$_GET['copy']=='1') ? "[{$questionType}] : {$questionName}\r\n" : '';
             
                 /* 初始化所需变量 */
                 $data2 = array();
@@ -151,13 +169,17 @@ class vHomeWork_Parser{
                 /* 转换 $data4 阵列至 HTML code */
                 foreach ($data4 as $key => $value) {
                     $num = $key + 1;
-                    $answer .= "<br />第 {$num} 空： {$value}";
+                    $answer .= (@$_GET['copy']!='1') ? "<br />第 {$num} 空： <input class='fill' style='width: 60%' type='text' value='{$value}' onclick='this.select()' readonly>\r\n" : "第 {$num} 空： {$value}\r\n";
                 }
+            
                 break;
             
             case 6:
                 $questionType = "阅读答题";
                 $questionName = '';
+            
+                /* 添加複製模式的題目類型與題目標題 */
+                $answer .= (@$_GET['copy']=='1') ? "[{$questionType}] : {$questionName}\r\n" : '';
             
                 /* 初始化所需变量 */
                 $data2 = array();
@@ -187,7 +209,7 @@ class vHomeWork_Parser{
                 /* 转换 $data4 阵列至 HTML code */
                 foreach ($data4 as $key => $value) {
                     $num = $key + 1;
-                    $answer .= "<br />第 {$num} 題： {$value}";
+                    $answer .= (@$_GET['copy']!='1') ? "<br />第 {$num} 題： {$value}" : "第 {$num} 題： {$value}\r\n";
                 }
                 break;
             
@@ -195,10 +217,17 @@ class vHomeWork_Parser{
                 $questionType = "尚不支持此题目类型";
                 $questionName = '';
         }
+        
+        /* 添加複製模式最後的 </textarea> */
+        if(@$_GET['copy']=='1'){
+            $answer .= '</textarea>';
+        }
 
         /* 输出答案 */
-        echo "[{$questionType}] : {$questionName}\r\n{$answer}";
+        $echo = (@$_GET['copy']=='1') ? "{$answer}" : "[{$questionType}] : {$questionName}\r\n{$answer}";
+        echo $echo;
     }
 }
 
 $vH_Parser = new vHomeWork_Parser();
+echo $footer;
