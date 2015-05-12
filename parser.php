@@ -93,7 +93,7 @@ class vHomeWork_Parser{
         $answer = (@$_GET['copy']=='1') ? '<textarea rows="15" onclick="this.select()" readonly>' : '';
         
         /* 判断题目类型, 解析答案 */
-        switch ($xml_Array[7]['attributes']['id']){
+        switch (@$xml_Array[7]['attributes']['id']){
             case 3:
             case 7:
                 $questionType = ($xml_Array[7]['attributes']['id'] == 7) ? "单选题" : "听力选择题";
@@ -169,7 +169,7 @@ class vHomeWork_Parser{
                 /* 转换 $data4 阵列至 HTML code */
                 foreach ($data4 as $key => $value) {
                     $num = $key + 1;
-                    $answer .= (@$_GET['copy']!='1') ? "<br />第 {$num} 空： <input class='fill' style='width: 60%' type='text' value='{$value}' onclick='this.select()' readonly>\r\n" : "第 {$num} 空： {$value}\r\n";
+                    $answer .= (@$_GET['copy']!='1') ? "<br />第 {$num} 空： <input class='fill' style='width: 60%' type='text' value=\"{$value}\" onclick='this.select()' readonly>\r\n" : "第 {$num} 空： {$value}\r\n";
                 }
             
                 break;
@@ -215,7 +215,7 @@ class vHomeWork_Parser{
             
             default:
                 $questionType = "尚不支持此题目类型";
-                $questionName = '';
+                $questionName = '请换题';
         }
         
         /* 添加複製模式最後的 </textarea> */
