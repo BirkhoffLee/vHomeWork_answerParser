@@ -115,28 +115,6 @@ class vHomeWork_Parser{
         }
         
         return $echo;
-        
-        
-        
-        
-        
-        /*
-        $baseurl = str_replace(urlencode($output['value2']), '{replace}', $data);
-        $sentnum = $_POST['sentnum'];
-        $data = json_decode($data, true);
-        var_dump($data);
-        $data['itemsdata'][0]['score'] = '100';
-        $data['itemsdata'][0]['sentenceid'] = '0';
-        
-        $echo = '';
-        for($i = 1; $i <= $sentnum; $i++) { 
-            $tdata = $data;
-            $tdata['itemsdata'][0]['sentenceid'] = "{$i}";
-            $a = str_replace('{replace}', urlencode(json_encode($tdata)), $baseurl);
-            $echo .= "<a href={$a}>$a</a><br /><br />";
-            unset($tdata);
-        } 
-        */
     }
 }
 
